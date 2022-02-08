@@ -11,25 +11,26 @@ import javax.inject.Inject
  * at Mayasoft LLC,
  * Tashkent, UZB.
  */
-class MovieServiceImpl (private val httpApi: HttpApi) : MovieService{
+class MovieServiceImpl(
+    private val httpApi: HttpApi) : MovieService{
 
     private var accessToken: String = ""
 
-    fun getPopular() : BaseResponse<Movie>{
-        return  try {
-            val resp = httpApi.getPopularMovies(getAccessToken()).execute()
-            BaseResponse(resp.code(), resp.body(), resp.errorBody()?.toString())
-        }
-        catch (e: Exception){
-            BaseResponse(500, null, e.toString())
-        }
-    }
 
     private fun getAccessToken(): String{
         return accessToken
     }
 
-    fun setAccessToken(accessToken: String){
+    override fun getPopular(): BaseResponse<Movie> {
+        return try {
+            val resp = httpApi.getPopularMovies(getAccessToken()).execute()
+            BaseResponse(resp.code(), resp.body(), resp.errorBody()?.toString())
+        } catch (e: Exception) {
+            BaseResponse(500, null, e.toString())
+        }
+    }
+
+    override fun setAccessToken(accessToken: String) {
         this.accessToken = accessToken;
     }
 }

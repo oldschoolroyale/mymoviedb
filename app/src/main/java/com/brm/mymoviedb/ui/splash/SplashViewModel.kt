@@ -3,6 +3,7 @@ package com.brm.mymoviedb.ui.splash
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.brm.mymoviedb.data.network.repo.MovieService
 import com.brm.mymoviedb.data.network.repo.MovieServiceImpl
 import com.brm.mymoviedb.exceptions.MovieDbNetworkException
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -18,7 +19,9 @@ import javax.inject.Inject
  * Tashkent, UZB.
  */
 @HiltViewModel
-class SplashViewModel @Inject constructor(private val movieServiceImpl: MovieServiceImpl) : ViewModel() {
+class SplashViewModel @Inject constructor(
+    private val movieService: MovieService
+) : ViewModel() {
 
     private val _status = MutableLiveData(false)
     val status get() = _status
@@ -26,7 +29,7 @@ class SplashViewModel @Inject constructor(private val movieServiceImpl: MovieSer
     @Throws(MovieDbNetworkException::class)
     fun startDataRetrieve() = viewModelScope.launch {
         val response = withContext(CoroutineScope(Dispatchers.IO).coroutineContext){
-            movieServiceImpl.getPopular()
+            movieService.getPopular()
         }
         if (response.status_code == 200) {
 
